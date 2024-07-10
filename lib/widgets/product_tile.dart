@@ -14,15 +14,29 @@ class ProductTile extends StatelessWidget {
       leading: product.imagePath != null && product.imagePath!.isNotEmpty
           ? Image.file(File(product.imagePath!), width: 50, height: 50, fit: BoxFit.cover)
           : null,
-      title: Text(
-        'R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.green,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              product.name,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          Text(
+            'R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+        ],
       ),
-      subtitle: Text(product.name),
       trailing: IconButton(
         icon: Icon(Icons.delete),
         onPressed: onDelete,
