@@ -47,15 +47,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
       body: _products.isEmpty
           ? Center(child: Text('Nenhum produto adicionado.'))
           : ListView.builder(
-              itemCount: _products.length,
-              itemBuilder: (context, index) {
-                final product = _products[index];
-                return ProductTile(
-                  product: product,
-                  onDelete: () => _deleteProduct(product.id),
-                );
-              },
-            ),
+        itemCount: _products.length,
+        itemBuilder: (context, index) {
+          final product = _products[index];
+          return ProductTile(
+            product: product,
+            onDelete: () => _deleteProduct(product.id),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/add-product').then((_) {
@@ -67,3 +67,4 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 }
+

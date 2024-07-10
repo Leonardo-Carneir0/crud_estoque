@@ -4,6 +4,7 @@ class Product {
   final String? barcode;
   final int? quantity;
   final String? imagePath;
+  final double? price;
 
   Product({
     required this.id,
@@ -11,6 +12,7 @@ class Product {
     this.barcode,
     this.quantity,
     this.imagePath,
+    this.price,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Product {
       barcode: json['barcode'],
       quantity: json['quantity'],
       imagePath: json['imagePath'],
+      price: json['price'],
     );
   }
 
@@ -30,6 +33,7 @@ class Product {
       'barcode': barcode,
       'quantity': quantity,
       'imagePath': imagePath,
+      'price': price,
     };
   }
 }

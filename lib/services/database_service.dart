@@ -21,7 +21,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3, // Atualize a versão para garantir a execução de _onUpgrade
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -34,7 +34,8 @@ class DatabaseService {
         name TEXT,
         barcode TEXT,
         quantity INTEGER,
-        imagePath TEXT
+        imagePath TEXT,
+        price REAL
       )
     ''');
   }
@@ -42,6 +43,9 @@ class DatabaseService {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('ALTER TABLE products ADD COLUMN imagePath TEXT');
+    }
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE products ADD COLUMN price REAL');
     }
   }
 
