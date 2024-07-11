@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../screens/product_detail_screen.dart'; // Novo import
 
 class ProductTile extends StatelessWidget {
   final Product product;
@@ -37,6 +38,14 @@ class ProductTile extends StatelessWidget {
           ),
         ],
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(product: product), // Nova navegação
+          ),
+        );
+      },
       trailing: IconButton(
         icon: Icon(Icons.delete),
         onPressed: onDelete,
