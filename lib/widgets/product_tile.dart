@@ -7,7 +7,7 @@ class ProductTile extends StatelessWidget {
   final Product product;
   final VoidCallback onDelete;
 
-  ProductTile({required this.product, required this.onDelete});
+  const ProductTile({super.key, required this.product, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ProductTile extends StatelessWidget {
           Expanded(
             child: Text(
               product.name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -30,7 +30,7 @@ class ProductTile extends StatelessWidget {
           ),
           Text(
             'R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.green,
@@ -47,7 +47,7 @@ class ProductTile extends StatelessWidget {
         );
       },
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: onDelete,
       ),
     );

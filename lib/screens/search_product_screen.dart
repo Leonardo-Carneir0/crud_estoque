@@ -3,6 +3,8 @@ import '../services/database_service.dart';
 import '../models/product.dart';
 
 class SearchProductScreen extends StatefulWidget {
+  const SearchProductScreen({super.key});
+
   @override
   _SearchProductScreenState createState() => _SearchProductScreenState();
 }
@@ -23,10 +25,10 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pesquisar Produto'),
+        title: const Text('Pesquisar Produto'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
@@ -34,19 +36,19 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
               decoration: InputDecoration(
                 labelText: 'Pesquisar por nome ou código de barras',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () {
                     _searchProducts(_searchController.text);
                   },
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _searchResults.isEmpty
-                ? Text('Nenhum resultado encontrado.')
+                ? const Text('Nenhum resultado encontrado.')
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: _searchResults.length,
                     itemBuilder: (context, index) {
                       final product = _searchResults[index];

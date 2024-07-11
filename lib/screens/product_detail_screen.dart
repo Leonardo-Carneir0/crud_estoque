@@ -1,12 +1,12 @@
+import 'dart:io'; // Import necessário para a classe File
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import 'edit_product_screen.dart';
-import 'dart:io';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
 
-  ProductDetailScreen({required this.product});
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -36,33 +36,38 @@ class ProductDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             product.imagePath != null
-                ? Image.file(File(product.imagePath!))
+                ? Image.file(
+              File(product.imagePath!),
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 200,
+            )
                 : Container(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Nome: ${product.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Preço: R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Código de Barras: ${product.barcode ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Quantidade: ${product.quantity ?? 0}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

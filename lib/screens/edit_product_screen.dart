@@ -7,7 +7,7 @@ import '../models/product.dart';
 class EditProductScreen extends StatefulWidget {
   final Product product;
 
-  EditProductScreen({required this.product});
+  const EditProductScreen({super.key, required this.product});
 
   @override
   _EditProductScreenState createState() => _EditProductScreenState();

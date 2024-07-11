@@ -4,6 +4,8 @@ import '../widgets/product_tile.dart';
 import '../models/product.dart';
 
 class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
+
   @override
   _ProductListScreenState createState() => _ProductListScreenState();
 }
@@ -34,10 +36,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Estoque de Produtos'),
+        title: const Text('Estoque de Produtos'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               Navigator.pushNamed(context, '/search-product');
             },
@@ -45,7 +47,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ],
       ),
       body: _products.isEmpty
-          ? Center(child: Text('Nenhum produto adicionado.'))
+          ? const Center(child: Text('Nenhum produto adicionado.'))
           : ListView.builder(
         itemCount: _products.length,
         itemBuilder: (context, index) {
@@ -62,7 +64,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             _fetchProducts();
           });
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

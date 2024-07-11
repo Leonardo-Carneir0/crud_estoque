@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'screens/product_list_screen.dart';
 import 'screens/search_product_screen.dart';
 import 'screens/add_product_screen.dart';
-import 'screens/edit_product_screen.dart'; // Nova importação
-import 'screens/product_detail_screen.dart'; // Nova importação
+// Nova importação
+// Nova importação
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,10 +20,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ProductListScreen(),
+      home: const ProductListScreen(),
       routes: {
-        '/add-product': (context) => AddProductScreen(),
-        '/search-product': (context) => SearchProductScreen(),
+        '/add-product': (context) => const AddProductScreen(),
+        '/search-product': (context) => const SearchProductScreen(),
       },
     );
   }
