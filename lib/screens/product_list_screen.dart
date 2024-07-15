@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../services/database_service.dart';
-import '../widgets/product_tile.dart';
+import 'package:gerenciador_mercadorias/widgets/product_tile.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../providers/product_provider.dart';
 import 'edit_product_screen.dart';
+import 'add_product_screen.dart';
+import '../providers/product_provider.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -12,47 +15,17 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  final DatabaseService _databaseService = DatabaseService();
-  List<Product> _products = [];
-
   @override
   void initState() {
     super.initState();
-    _fetchProducts();
-  }
-
-  Future<void> _fetchProducts() async {
-    final products = await _databaseService.getProducts();
-    setState(() {
-      _products = products;
-    });
-  }
-
-  void _deleteProduct(String id) async {
-    await _databaseService.deleteProduct(id);
-    _fetchProducts();
-  }
-
-  Future<void> _editProduct(Product product) async {
-    final updatedProduct = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditProductScreen(product: product),
-      ),
-    );
-
-    if (updatedProduct != null) {
-      setState(() {
-        final index = _products.indexWhere((p) => p.id == updatedProduct.id);
-        if (index != -1) {
-          _products[index] = updatedProduct;
-        }
-      });
-    }
+    Provider.of<ProductProvider>(context, listen: false).fetchProducts();
   }
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
+    final products = productProvider.products;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Estoque de Produtos'),
@@ -65,24 +38,40 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
         ],
       ),
-      body: _products.isEmpty
+      body: products.isEmpty
           ? const Center(child: Text('Nenhum produto adicionado.'))
           : ListView.builder(
-              itemCount: _products.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
-                final product = _products[index];
+                final product = products[index];
                 return ProductTile(
                   product: product,
-                  onDelete: () => _deleteProduct(product.id),
-                  onEdit: () => _editProduct(product),
+                  onDelete: () => productProvider.deleteProduct(product.id),
+                  onEdit: () async {
+                    final updatedProduct = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditProductScreen(product: product),
+                      ),
+                    );
+
+                    if (updatedProduct != null) {
+                      productProvider.updateProduct(updatedProduct);
+                    }
+                  },
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add-product').then((_) {
-            _fetchProducts();
-          });
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddProductScreen()),
+          );
+          if (result != null) {
+            productProvider.addProduct(result);
+          }
         },
         child: const Icon(Icons.add),
       ),

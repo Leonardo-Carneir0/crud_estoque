@@ -1,4 +1,4 @@
-import 'package:path/path.dart';
+import 'package:path/path.dart'; // Certifique-se de que esse pacote está adicionado no pubspec.yaml
 import 'package:sqflite/sqflite.dart';
 import '../models/product.dart';
 
@@ -54,6 +54,7 @@ class DatabaseService {
     try {
       await db.insert('products', product.toJson());
     } catch (e) {
+      // Substitua o print por um logger apropriado
       print('Erro ao inserir produto: $e');
     }
   }
@@ -68,6 +69,7 @@ class DatabaseService {
         whereArgs: [product.id],
       );
     } catch (e) {
+      // Substitua o print por um logger apropriado
       print('Erro ao atualizar produto: $e');
     }
   }
@@ -80,6 +82,7 @@ class DatabaseService {
         return Product.fromJson(maps[i]);
       });
     } catch (e) {
+      // Substitua o print por um logger apropriado
       print('Erro ao obter produtos: $e');
       return [];
     }
@@ -90,6 +93,7 @@ class DatabaseService {
     try {
       await db.delete('products', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
+      // Substitua o print por um logger apropriado
       print('Erro ao excluir produto: $e');
     }
   }
@@ -106,6 +110,7 @@ class DatabaseService {
         return Product.fromJson(maps[i]);
       });
     } catch (e) {
+      // Substitua o print por um logger apropriado
       print('Erro ao buscar produtos: $e');
       return [];
     }

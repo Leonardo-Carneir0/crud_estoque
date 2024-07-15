@@ -5,10 +5,14 @@ import '../screens/product_detail_screen.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
+  final Future<void> Function() onEdit;
+  final void Function() onDelete;
 
   const ProductTile({
     super.key,
     required this.product,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -16,7 +20,7 @@ class ProductTile extends StatelessWidget {
     return ListTile(
       leading: product.imagePath != null && product.imagePath!.isNotEmpty
           ? Image.file(File(product.imagePath!),
-              width: 50, height: 50, fit: BoxFit.cover)
+          width: 50, height: 50, fit: BoxFit.cover)
           : null,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,13 +45,17 @@ class ProductTile extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(product: product),
           ),
         );
+
+        if (result == true) {
+          onDelete();
+        }
       },
     );
   }

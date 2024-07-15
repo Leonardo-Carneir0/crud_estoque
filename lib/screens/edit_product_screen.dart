@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/product.dart';
-import '../services/database_service.dart';
+import '../providers/product_provider.dart';
 
 class EditProductScreen extends StatefulWidget {
   final Product product;
@@ -37,12 +38,34 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      _showErrorDialog('Erro ao selecionar imagem: $e');
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Erro'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -76,6 +99,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 controller: _quantityController,
                 decoration: const InputDecoration(labelText: 'Quantidade'),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      int.tryParse(value) == null) {
+                    return 'Por favor, insira um número válido';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: _priceController,
@@ -84,6 +115,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o preço do produto';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Por favor, insira um valor válido';
                   }
                   return null;
                 },
@@ -109,7 +143,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final updatedProduct = Product(
                       id: widget.product.id,
@@ -123,10 +157,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       imagePath: _imageFile?.path,
                       price: double.tryParse(_priceController.text) ?? 0.0,
                     );
-                    final databaseService = DatabaseService();
-                    databaseService.updateProduct(updatedProduct).then((_) {
+                    final productProvider =
+                        Provider.of<ProductProvider>(context, listen: false);
+                    try {
+                      await productProvider.updateProduct(updatedProduct);
+                      if (!mounted)
+                        return; // Verificar se o contexto ainda é válido
                       Navigator.pop(context, updatedProduct);
-                    });
+                    } catch (e) {
+                      _showErrorDialog('Erro ao atualizar produto: $e');
+                    }
                   }
                 },
                 child: const Text('Salvar Alterações'),

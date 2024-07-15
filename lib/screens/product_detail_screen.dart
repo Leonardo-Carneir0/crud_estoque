@@ -1,13 +1,65 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../providers/product_provider.dart';
 import 'edit_product_screen.dart';
-import '../services/database_service.dart';
+import '../widgets/product_widgets.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
 
   const ProductDetailScreen({super.key, required this.product});
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Erro'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Excluir Produto'),
+        content: const Text('Tem certeza que deseja excluir este produto?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              final productProvider =
+                  Provider.of<ProductProvider>(context, listen: false);
+              try {
+                await productProvider.deleteProduct(product.id);
+                if (!context.mounted) return;
+                Navigator.pop(context, true);
+              } catch (e) {
+                _showErrorDialog(context, 'Erro ao excluir produto: $e');
+              }
+            },
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,45 +69,35 @@ class ProductDetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () async {
-              final databaseService = DatabaseService();
-              await databaseService.deleteProduct(product.id);
-              Navigator.pop(context); // Volta para a lista de produtos
-            },
+            onPressed: () => _confirmDelete(context),
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            product.imagePath != null
-                ? Image.file(
-                    File(product.imagePath!),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 200,
-                  )
-                : Container(),
+            ProductImage(imagePath: product.imagePath),
             const SizedBox(height: 16),
-            Text(
-              'Nome: ${product.name}',
+            ProductDetailText(
+              label: 'Nome',
+              value: product.name,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Preço: R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
+            ProductDetailText(
+              label: 'Preço',
+              value: 'R\$ ${product.price?.toStringAsFixed(2) ?? '0.00'}',
               style: const TextStyle(fontSize: 18),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Código de Barras: ${product.barcode ?? 'N/A'}',
+            ProductDetailText(
+              label: 'Código de Barras',
+              value: product.barcode ?? 'N/A',
               style: const TextStyle(fontSize: 18),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Quantidade: ${product.quantity ?? 0}',
+            ProductDetailText(
+              label: 'Quantidade',
+              value: '${product.quantity ?? 0}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
