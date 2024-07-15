@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../services/database_service.dart';
 import '../models/product.dart';
+import '../services/database_service.dart';
 
 class EditProductScreen extends StatefulWidget {
   final Product product;
@@ -27,9 +27,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.product.name);
     _barcodeController = TextEditingController(text: widget.product.barcode);
-    _quantityController = TextEditingController(text: widget.product.quantity?.toString());
-    _priceController = TextEditingController(text: widget.product.price?.toString());
-    _imageFile = widget.product.imagePath != null ? File(widget.product.imagePath!) : null;
+    _quantityController =
+        TextEditingController(text: widget.product.quantity?.toString());
+    _priceController =
+        TextEditingController(text: widget.product.price?.toString());
+    _imageFile = widget.product.imagePath != null
+        ? File(widget.product.imagePath!)
+        : null;
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -65,7 +69,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               TextFormField(
                 controller: _barcodeController,
-                decoration: const InputDecoration(labelText: 'Código de Barras'),
+                decoration:
+                    const InputDecoration(labelText: 'Código de Barras'),
               ),
               TextFormField(
                 controller: _quantityController,
@@ -109,14 +114,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     final updatedProduct = Product(
                       id: widget.product.id,
                       name: _nameController.text,
-                      barcode: _barcodeController.text.isEmpty ? null : _barcodeController.text,
-                      quantity: _quantityController.text.isEmpty ? null : int.parse(_quantityController.text),
+                      barcode: _barcodeController.text.isEmpty
+                          ? null
+                          : _barcodeController.text,
+                      quantity: _quantityController.text.isEmpty
+                          ? null
+                          : int.parse(_quantityController.text),
                       imagePath: _imageFile?.path,
                       price: double.tryParse(_priceController.text) ?? 0.0,
                     );
                     final databaseService = DatabaseService();
-                    databaseService.insertProduct(updatedProduct).then((_) {
-                      Navigator.pop(context);
+                    databaseService.updateProduct(updatedProduct).then((_) {
+                      Navigator.pop(context, updatedProduct);
                     });
                   }
                 },

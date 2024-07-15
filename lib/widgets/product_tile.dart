@@ -1,19 +1,22 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
-import '../screens/product_detail_screen.dart'; // Novo import
+import '../screens/product_detail_screen.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
-  final VoidCallback onDelete;
 
-  const ProductTile({super.key, required this.product, required this.onDelete});
+  const ProductTile({
+    super.key,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: product.imagePath != null && product.imagePath!.isNotEmpty
-          ? Image.file(File(product.imagePath!), width: 50, height: 50, fit: BoxFit.cover)
+          ? Image.file(File(product.imagePath!),
+              width: 50, height: 50, fit: BoxFit.cover)
           : null,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,14 +45,10 @@ class ProductTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(product: product), // Nova navegação
+            builder: (context) => ProductDetailScreen(product: product),
           ),
         );
       },
-      trailing: IconButton(
-        icon: const Icon(Icons.delete),
-        onPressed: onDelete,
-      ),
     );
   }
 }

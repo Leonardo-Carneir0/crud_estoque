@@ -17,16 +17,21 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _barcodeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController(); // Novo campo de preço
+  final TextEditingController _priceController = TextEditingController();
 
   File? _imageFile;
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print('Erro ao selecionar imagem: $e');
+      // Adicione tratamento de erro aqui, como mostrar um alerta ao usuário
     }
   }
 
@@ -54,7 +59,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               TextFormField(
                 controller: _barcodeController,
-                decoration: const InputDecoration(labelText: 'Código de Barras'),
+                decoration:
+                    const InputDecoration(labelText: 'Código de Barras'),
               ),
               TextFormField(
                 controller: _quantityController,
@@ -98,14 +104,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     final newProduct = Product(
                       id: DateTime.now().toString(),
                       name: _nameController.text,
-                      barcode: _barcodeController.text.isEmpty ? null : _barcodeController.text,
-                      quantity: _quantityController.text.isEmpty ? null : int.parse(_quantityController.text),
+                      barcode: _barcodeController.text.isEmpty
+                          ? null
+                          : _barcodeController.text,
+                      quantity: _quantityController.text.isEmpty
+                          ? null
+                          : int.parse(_quantityController.text),
                       imagePath: _imageFile?.path,
-                      price: double.tryParse(_priceController.text) ?? 0.0, // Novo campo de preço
+                      price: double.tryParse(_priceController.text) ?? 0.0,
                     );
                     final databaseService = DatabaseService();
                     databaseService.insertProduct(newProduct).then((_) {
-                      Navigator.pop(context);
+                      Navigator.pop(context,
+                          newProduct); // Retorna o novo produto adicionado
                     });
                   }
                 },

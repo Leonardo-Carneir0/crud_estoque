@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'screens/product_list_screen.dart';
 import 'screens/search_product_screen.dart';
 import 'screens/add_product_screen.dart';
-// Nova importação
-// Nova importação
 
 void main() {
   runApp(const MyApp());
